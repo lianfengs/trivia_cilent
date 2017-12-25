@@ -44,7 +44,7 @@ public class Ready_Frame {
 		jf = new JFrame();
 		jf.setResizable(false);
 		jf.setTitle("×¼±¸ÊÒ");
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		jf.setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -182,9 +182,45 @@ public class Ready_Frame {
 			player_ready[i] = jsreply.get("ready").getAsBoolean();
 
 		}
+	/*	for (int i=0;i<4;i++)
+			if (player_id[i]==-1) {
+				player_id[i]=your_id;
+				player_nickname[i]=your_nickname;
+				break;
+			}
+		update_player();*/
+		contentPane.updateUI();
+		jf.repaint();
+		jf.setVisible(true);
+        jf.setLocationRelativeTo(null);
+        jf.setAlwaysOnTop(true);
+	}
+	public void leave_room(int leaver_id,int new_host) {
 		for (int i=0;i<4;i++) {
-			if (player_id[i]==-1) continue;
-			if (player_id[i]==host_id) {
+			if (player_id[i]==leaver_id) {
+				player_id[i]=-1;
+				player_ready[i]=false;
+				player_nickname[i]="";
+			}
+		}
+		host_id=new_host;
+		update_player();
+	}
+	
+	public void join_room(int joiner_id,String joiner_nickname) {
+		for (int i=0;i<4;i++)
+			if (player_id[i]==-1) {
+				player_id[i]=joiner_id;
+				player_nickname[i]=joiner_nickname;
+				player_ready[i]=false;
+				break;
+			}
+		update_player();
+	}
+	
+	public void update_player() {
+		for (int i=0;i<4;i++) {
+			if (player_id[i]==host_id&&host_id!=-1) {
 				ready[i].setIcon(new ImageIcon("pic/host.jpg"));
 			}else if (player_ready[i]) {
 				ready[i].setIcon(new ImageIcon("pic/ready.png"));
@@ -193,22 +229,14 @@ public class Ready_Frame {
 			}
 			id[i].setText(player_nickname[i]);
 		}
-		for (int i=0;i<4;i++)
-			if (player_id[i]==-1) {
-				if (your_id==host_id) {
-					ready[i].setIcon(new ImageIcon("pic/host.jpg"));
-				}else if (player_ready[i]) {
-					ready[i].setIcon(new ImageIcon("pic/ready.png"));
-				}else {
-					ready[i].setIcon(null);
-				}
-				id[i].setText(your_nickname);
-				break;
+	}
+	
+	public void player_ready(int ready_id) {
+		for (int i=0;i<4;i++) {
+			if (player_id[i]==ready_id) {
+				player_ready[i]=!player_ready[i];
 			}
-		contentPane.updateUI();
-		jf.repaint();
-		jf.setVisible(true);
-        jf.setLocationRelativeTo(null);
-        jf.setAlwaysOnTop(true);
+		}
+		update_player();
 	}
 }

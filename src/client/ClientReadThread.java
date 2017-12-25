@@ -111,6 +111,8 @@ public class ClientReadThread extends Thread {
 	       				String joiner_nickname=jsreply.get("joiner_nickname").getAsString();
 	       				      				
       					roomf.join_room(joiner_id,table_id);
+      					
+      					if (table==table_id) readyf.join_room(joiner_id,joiner_nickname);
       				}
       			 }else if (command.equals("leave_room")) {
 
@@ -121,7 +123,16 @@ public class ClientReadThread extends Thread {
 	       				int host_id = jsreply.get("new_host").getAsInt();
 	       				
 	       				roomf.leave_room(leaver_id,table_id);
-      		 }
+	       				
+	       				if(table==table_id) readyf.leave_room(leaver_id,host_id);
+	       				
+	       				if (leaver_id==your_id) table=-1;
+      			 }else if (command.equals("update_ready")) {
+
+	       			int player_id = jsreply.get("player_id").getAsInt();
+	       			
+	       			readyf.player_ready(player_id);
+      			 }
       			 
 
             }

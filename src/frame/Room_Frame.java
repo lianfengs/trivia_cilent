@@ -55,7 +55,7 @@ public class Room_Frame {
 			table[table_id][0] = 0;
 
 			for (; player.hasNext();) {
-				jsreply = (JsonObject) it.next();
+				jsreply = (JsonObject) player.next();
 
 				int player_id = jsreply.get("player_id").getAsInt();
 
