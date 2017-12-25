@@ -24,6 +24,7 @@ public class ClientReadThread extends Thread {
 	static Game_Frame gamef;
 	int your_id;
 	int table=-1;
+	String your_nickname;
     /**
      * constructor.
      */
@@ -32,11 +33,13 @@ public class ClientReadThread extends Thread {
         socket=_socket;
         loginf=new Login_Frame(socket);
         roomf=new Room_Frame(socket);
-        readyf=new Ready_Frame();
-        gamef=new Game_Frame();
+        readyf=new Ready_Frame(socket);
+        gamef=new Game_Frame(socket);
     }
 
     public void run() {
+
+			 System.out.println("read run");
         try {
             while (true) {
                 //read the data
@@ -52,7 +55,7 @@ public class ClientReadThread extends Thread {
 	       			 if (result.equals("success")) {
 	       				 
 	       				 your_id=jsreply.get("player_id").getAsInt();
-	       				 
+	       				 your_nickname=jsreply.get("nickname").getAsString();
 	       				 loginf.login_succ();
 	       				 
 	       			 }else {
@@ -79,11 +82,12 @@ public class ClientReadThread extends Thread {
       				
       				String target=jsreply.get("target").getAsString();
       				
-      				String result=jsreply.get("result").getAsString();
 	       			
       				if (target.equals("joiner")) {
-      				
-	      				if (result.equals("failure")) {
+
+          				String result=jsreply.get("result").getAsString();
+          				
+	      				if (result.equals("false")) {
 		       				roomf.join_room_fail();
 		       			}else {
 		       				JsonArray ja = jsreply.get("other_players").getAsJsonArray();
@@ -91,12 +95,13 @@ public class ClientReadThread extends Thread {
 		       				int table_id = jsreply.get("game_id").getAsInt();
 		       				
 		       				int host_id = jsreply.get("host_id").getAsInt();
-		       				
+		       						       				
 		       				table=table_id;
 		       				
 		       				//roomf.join_room_succ();
 		       				
-	      					roomf.join_room(your_id,table_id);
+		       				readyf.Init(ja,table_id,host_id,your_id,your_nickname);
+		       				
 		       			}
       				}else {
 	       				int table_id = jsreply.get("game_id").getAsInt();
@@ -107,7 +112,16 @@ public class ClientReadThread extends Thread {
 	       				      				
       					roomf.join_room(joiner_id,table_id);
       				}
-      			 }
+      			 }else if (command.equals("leave_room")) {
+
+	       				int table_id = jsreply.get("game_id").getAsInt();
+	       				
+	       				int leaver_id = jsreply.get("leaver_id").getAsInt();
+	       				
+	       				int host_id = jsreply.get("new_host").getAsInt();
+	       				
+	       				roomf.leave_room(leaver_id,table_id);
+      		 }
       			 
 
             }

@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 public class Room_Join_Fail_Frame extends JFrame {
     public Room_Join_Fail_Frame(){
-    	JLabel jLabel1 = new JLabel("该房间人数已满");
+    	JLabel jLabel1 = new JLabel("加入房间失败");
         JButton confirm = new JButton("确认");
         JPanel jp1 = new JPanel();
         JPanel jp2 = new JPanel();

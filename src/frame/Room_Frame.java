@@ -115,6 +115,26 @@ public class Room_Frame {
 		jf.repaint();
 	}
 
+	public void leave_room(int leaver_id,int table_id) {
+		System.out.println("leave_room("+leaver_id+","+table_id+")");
+		int[] tmp= {0,-1,-1,-1};
+		
+		for (int i=1;i<=table[table_id][0];i++) {
+			if (table[table_id][i]!=leaver_id)
+				tmp[++tmp[0]]=table[table_id][i];
+		}
+		
+		for (int i=0;i<=tmp[0];i++) {
+			table[table_id][i]=tmp[i];
+		}
+				
+		String path = "pic/table_" + Integer.toString(table[table_id][0]) + ".jpg";
+		ImageIcon icon = new ImageIcon(path);
+		jb[table_id].setIcon(icon);
+		jp[table_id].updateUI();
+		jf.repaint();
+	}
+	
 	class Join implements ActionListener {
 		int table_id;
 
